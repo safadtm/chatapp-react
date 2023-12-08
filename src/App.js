@@ -1,41 +1,48 @@
-import React, { useState, useRef } from "react";
-import "./App.css";
-import { Auth } from "./components/Auth";
-import Cookies from "universal-cookie";
+import React, { useState, useEffect } from "react";
 import { Chat } from "./components/Chat";
+import { Auth } from "./components/Auth.js";
+import { AppWrapper } from "./components/AppWrapper";
+import Cookies from "universal-cookie";
+import "./App.css";
+
 const cookies = new Cookies();
 
-function App() {
+function ChatApp() {
   const [isAuth, setIsAuth] = useState(cookies.get("auth-token"));
-  const [room, setRoom] = useState(null);
-
-  const roomInputRef = useRef(null);
+  const [isInChat, setIsInChat] = useState(null);
+  const [room, setRoom] = useState("");
 
   if (!isAuth) {
     return (
-      <div>
-        <Auth setIsAuth={setIsAuth}/>
-      </div>
+      <AppWrapper
+        isAuth={isAuth}
+        setIsAuth={setIsAuth}
+        setIsInChat={setIsInChat}
+      >
+        <Auth setIsAuth={setIsAuth} />
+      </AppWrapper>
     );
   }
 
-  return <div>
-    {room ?
-      (
-      <Chat room={room}/>
-      ) :
-      (
+  return (
+    <AppWrapper isAuth={isAuth} setIsAuth={setIsAuth} setIsInChat={setIsInChat}>
+      {!isInChat ? (
         <div className="room">
-
-          <label>Enter Room Name:</label>
-          <input ref={roomInputRef} />
-          <button onClick={() => setRoom(roomInputRef.current.value)}>
+          <label> Type room name: </label>
+          <input onChange={(e) => setRoom(e.target.value)} />
+          <button
+            onClick={() => {
+              setIsInChat(true);
+            }}
+          >
             Enter Chat
           </button>
         </div>
-      )
-    }
-  </div>;
-
+      ) : (
+        <Chat room={room} />
+      )}
+    </AppWrapper>
+  );
 }
-export default App;
+
+export default ChatApp;

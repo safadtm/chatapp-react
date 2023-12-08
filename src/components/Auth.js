@@ -4,6 +4,9 @@ import { signInWithPopup } from "firebase/auth"
 import Cookies from "universal-cookie";
 const cookies = new Cookies();
 
+// import '../styles/Auth.css';
+
+
 export const Auth = (props) => {
     const { setIsAuth } = props;
 
